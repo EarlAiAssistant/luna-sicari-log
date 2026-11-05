@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luna &amp; Sicari Log</title>
+<meta name="description" content="A private log of Luna and Sicari's reactions and training sessions. Everything stays on this phone.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dog Log">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F8F5EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141311" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+html { font-size: 17px; }
+/* On iPhone, follow the text size set in Settings > Display & Brightness > Text Size. */
+@supports (font: -apple-system-body) { html { font: -apple-system-body; } }
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+:root { padding-top: env(safe-area-inset-top, 0px); }
+/* Layout: one column like Apple Notes. Day-grouped history, actions pinned at the bottom for the thumb, sheets rise from the bottom. */
+:root {
+  --bg: #F8F5EE;
+  --surface: #FFFDF9;
+  --fill: #EEEAE1;
+  --fg: #1B1A17;
+  --muted: #6C675D;
+  --line: rgba(27, 26, 23, .11);
+  --accent: #1E5B44;
+  --on-accent: #FFFFFF;
+  --accent-soft: rgba(30, 91, 68, .11);
+  --danger: #A3352B;
+  --dog-a: #D7C6A8;
+  --dog-b: #AEB8B2;
+  --dog-c: #CDB6B1;
+  --dog-d: #BCB5C9;
+  --dog-fg: #2A2722;
+  --scrim: rgba(20, 18, 15, .32);
+  --shadow: 0 -10px 34px rgba(20, 18, 15, .14);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  --bar-h: 92px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141311; --surface: #1F1E1B; --fill: #2B2A26; --fg: #EFECE5; --muted: #A29D92;
+    --line: rgba(239, 236, 229, .12); --accent: #62AE8B; --on-accent: #0B1A12; --accent-soft: rgba(98, 174, 139, .17);
+    --danger: #E0796E; --dog-a: #6D604B; --dog-b: #56615B; --dog-c: #6E5753; --dog-d: #5D5869; --dog-fg: #F2EEE6;
+    --scrim: rgba(0, 0, 0, .55); --shadow: 0 -10px 34px rgba(0, 0, 0, .5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141311; --surface: #1F1E1B; --fill: #2B2A26; --fg: #EFECE5; --muted: #A29D92;
+  --line: rgba(239, 236, 229, .12); --accent: #62AE8B; --on-accent: #0B1A12; --accent-soft: rgba(98, 174, 139, .17);
+  --danger: #E0796E; --dog-a: #6D604B; --dog-b: #56615B; --dog-c: #6E5753; --dog-d: #5D5869; --dog-fg: #F2EEE6;
+  --scrim: rgba(0, 0, 0, .55); --shadow: 0 -10px 34px rgba(0, 0, 0, .5); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 1rem; line-height: 1.4;
+  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+button, select, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; touch-action: manipulation; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app { max-width: 480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 14px 10px; display: grid; gap: 10px; }
+.titlebar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+h1 { font-family: var(--font-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.02em; margin: 0; font-weight: 700; }
+.proto { font-size: .8rem; font-weight: 600; color: var(--accent); padding: .35rem .7rem; border-radius: 999px; background: var(--accent-soft); white-space: nowrap; }
+.filter { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter button { display: inline-flex; align-items: center; gap: .4rem; min-height: 2.4rem; padding: 0 .85rem 0 .5rem; border-radius: 999px; background: var(--fill); font-size: .9rem; font-weight: 500; }
+.filter button.all { padding-left: .85rem; }
+.filter button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* Avatars */
+.av { width: 2rem; height: 2rem; border-radius: 50%; display: inline-grid; place-items: center; font-weight: 600; font-size: .9rem; flex: none; object-fit: cover; color: var(--dog-fg); }
+.av-a { background: var(--dog-a); }
+.av-b { background: var(--dog-b); }
+.av-c { background: var(--dog-c); }
+.av-d { background: var(--dog-d); }
+.av.xl { width: 4.6rem; height: 4.6rem; font-size: 1.8rem; }
+.av.sm { width: 1.35rem; height: 1.35rem; font-size: .66rem; }
+.av.xs { width: 1.6rem; height: 1.6rem; font-size: .75rem; }
+.av.lg { width: 2.6rem; height: 2.6rem; font-size: 1.1rem; }
+
+/* History */
+main { padding-bottom: calc(var(--bar-h) + 20px); }
+.proto-note { font-size: .78rem; color: var(--muted); margin: 2px 0 14px; }
+.day { margin-bottom: 22px; }
+.day h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 8px 4px; }
+.day ul { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: 12px; overflow: hidden; }
+.day li + li .entry { border-top: 1px solid var(--line); }
+.day li + li { margin-left: 14px; }
+.day li + li .entry { padding-left: 0; }
+.entry { display: grid; gap: 5px; width: 100%; text-align: left; padding: 12px 14px; transition: background-color 1.8s ease; }
+.entry:active { background: var(--fill); transition: none; }
+.entry.just { background: var(--accent-soft); transition: none; }
+.head { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.head time { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .92rem; }
+.head .dot { color: var(--muted); }
+.what { font-weight: 600; }
+.needs { font-weight: 600; color: var(--accent); }
+.line { display: flex; align-items: center; gap: 8px; font-size: .95rem; min-width: 0; }
+.line span { min-width: 0; }
+.line .none { color: var(--muted); }
+.note { margin: 0; font-size: .87rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.empty { text-align: center; color: var(--muted); padding: 48px 12px; font-size: .95rem; text-wrap: balance; }
+
+/* Bottom actions */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line);
+  padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar-inner { max-width: 448px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 10px; }
+.bar button { flex: 1 1 9em; min-height: 3.3rem; border-radius: 14px; font-weight: 600; font-size: 1rem; padding: .5rem .8rem; line-height: 1.2; }
+.bar .primary { background: var(--accent); color: var(--on-accent); flex-grow: 1.35; }
+.bar .secondary { background: var(--surface); border: 1.5px solid var(--line); }
+
+/* Sheets */
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 20; opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s; }
+.scrim.open { opacity: 1; visibility: visible; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 480px; z-index: 21; background: var(--surface); border-radius: 16px 16px 0 0; box-shadow: var(--shadow);
+  max-height: calc(100vh - env(safe-area-inset-top, 0px) - 28px); max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 28px);
+  display: flex; flex-direction: column; transform: translateY(105%); visibility: hidden; transition: transform .28s cubic-bezier(.2,.8,.2,1), visibility .28s; }
+.sheet.open { transform: none; visibility: visible; }
+.grab { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 0; flex: none; }
+.sheet-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 8px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); flex: none; }
+.sheet-head > :first-child { justify-self: start; }
+.sheet-head > :last-child { justify-self: end; }
+.sheet-title { font-size: 1rem; font-weight: 600; margin: 0; text-align: center; }
+.done { font-weight: 700; color: var(--accent); padding: .45rem .2rem; font-size: 1rem; }
+.done:disabled { color: var(--muted); opacity: .6; cursor: default; }
+.ghost { color: var(--accent); padding: .45rem .2rem; font-size: 1rem; }
+.sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 14px max(16px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 18px; }
+
+.status { font-size: .82rem; color: var(--muted); text-align: center; display: inline-flex; align-items: center; gap: .3rem; white-space: nowrap; }
+.status.saved { color: var(--accent); font-weight: 600; }
+.status.pulse { animation: pulse .5s ease; }
+@keyframes pulse { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+.timepick { position: relative; display: inline-flex; }
+.timepick select { appearance: none; -webkit-appearance: none; border: 0; background: var(--fill); border-radius: 999px; padding: .4rem 1.7rem .4rem .8rem; font-size: .9rem; font-weight: 600; }
+.timepick::after { content: "\25BE"; position: absolute; right: .7rem; top: 50%; transform: translateY(-50%); font-size: .75rem; color: var(--muted); pointer-events: none; }
+
+.q { font-size: 1.15rem; font-weight: 700; margin: 0 0 -6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 2.75rem; padding: 0 .95rem; border-radius: 999px; background: var(--fill); font-size: .95rem; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.chip[aria-pressed="true"]::before, .rbtn[aria-pressed="true"] .rl::before, .seg button[aria-pressed="true"]::before { content: "\2713\00a0"; }
+
+.dogrow { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+.dogname { display: flex; align-items: center; gap: 10px; }
+.dogname .dn { font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+.resp { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.6rem), 1fr)); gap: 8px; }
+.rbtn { min-height: 3.5rem; padding: .55rem .65rem; border-radius: 12px; background: var(--fill); border: 1.5px solid transparent; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; gap: 2px; }
+.rbtn .rl { font-weight: 600; font-size: 1rem; line-height: 1.2; }
+.rbtn .rs { font-size: .72rem; color: var(--muted); line-height: 1.25; }
+.quiet .rbtn { background: transparent; border-color: var(--line); }
+.rbtn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.rbtn[aria-pressed="true"] .rs { color: var(--on-accent); opacity: .82; }
+
+.field { display: grid; gap: 6px; }
+.flabel { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: .65rem .75rem; resize: vertical; font-size: 1rem; line-height: 1.4; }
+textarea::placeholder { color: var(--muted); }
+.danger { color: var(--danger); font-weight: 600; justify-self: start; padding: .4rem 0; font-size: .95rem; }
+
+.group { display: grid; gap: 8px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { flex: 1 1 6em; min-height: 2.75rem; border-radius: 10px; background: var(--fill); font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; padding: 0 .6rem; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.stepper { display: flex; align-items: center; gap: 14px; }
+.stepper button { width: 2.9rem; height: 2.9rem; border-radius: 50%; background: var(--fill); font-size: 1.4rem; font-weight: 500; line-height: 1; }
+.stepper .mins { width: 4.2em; min-height: 2.9rem; text-align: center; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 0 .3rem; }
+.stepper .mins { -moz-appearance: textfield; appearance: textfield; }
+.stepper .mins::-webkit-inner-spin-button, .stepper .mins::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+.unit { font-weight: 600; color: var(--muted); margin-left: -6px; }
+.textin { width: 100%; min-height: 2.9rem; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: .55rem .75rem; font-size: 1rem; }
+.textin::placeholder { color: var(--muted); }
+.chip.more { background: transparent; border: 1.5px dashed var(--line); }
+.chip.more[aria-pressed="true"] { border-style: solid; border-color: var(--accent); }
+.preview { margin: 0; font-size: .9rem; color: var(--muted); }
+.preview b { color: var(--fg); font-weight: 600; }
+
+/* Prototype panel */
+.pt h3 { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 -8px; }
+.script { margin: 0; padding-left: 1.3rem; display: grid; gap: 8px; font-size: .95rem; }
+.script q { font-weight: 600; }
+.result { background: var(--bg); border-radius: 12px; padding: 12px 14px; font-size: .9rem; display: grid; gap: 4px; }
+.result .big { font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.result .muted { color: var(--muted); }
+.photos { display: grid; gap: 8px; }
+.photo-row { display: flex; align-items: center; gap: 10px; }
+.photo-row .pick { margin-left: auto; color: var(--accent); font-weight: 600; font-size: .92rem; padding: .4rem .2rem; cursor: pointer; }
+.photo-row input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-row:focus-within .pick { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.btnrow button { min-height: 2.6rem; padding: 0 .9rem; border-radius: 10px; background: var(--fill); font-weight: 600; font-size: .9rem; }
+.btnrow button.armed { background: var(--danger); color: var(--surface); }
+.fine { font-size: .8rem; color: var(--muted); margin: 0; }
+
+/* Export */
+.headbtns { display: flex; gap: 6px; }
+.titlebar { flex-wrap: wrap; }
+.hint { margin: 0; font-size: .85rem; color: var(--muted); }
+.hint.err { color: var(--danger); }
+.daterow { display: grid; gap: 6px; }
+.daterow label { font-size: .85rem; color: var(--muted); display: grid; gap: 4px; }
+.daterow.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: 10px; }
+.previewhead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.meta { font-size: .8rem; color: var(--muted); }
+.out { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: .75rem .85rem; font-family: var(--font); font-size: .88rem; line-height: 1.45;
+  white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22rem; overflow: auto; -webkit-user-select: text; user-select: text; }
+.out.mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .72rem; white-space: pre; overflow-wrap: normal; }
+.out.err { color: var(--danger); font-family: var(--font); white-space: normal; }
+.copybtn { min-height: 3.3rem; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-weight: 600; font-size: 1rem; padding: .5rem .8rem; }
+.copybtn:disabled { opacity: .45; cursor: default; }
+.linkbtn { color: var(--accent); font-weight: 600; font-size: .92rem; justify-self: start; padding: .3rem 0; }
+/* Dogs */
+.filter .editchip { background: transparent; border: 1.5px dashed var(--line); padding: 0 .85rem; color: var(--accent); font-weight: 600; }
+.backbtn { color: var(--accent); font-size: 1rem; padding: .45rem .2rem; white-space: nowrap; }
+.doglist { list-style: none; margin: 0; padding: 0; background: var(--bg); border-radius: 12px; overflow: hidden; }
+.doglist li + li { border-top: 1px solid var(--line); }
+.dogitem { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; text-align: left; min-height: 3.8rem; }
+.dogitem:active { background: var(--fill); }
+.dogitem .meta2 { display: grid; min-width: 0; }
+.dogitem .nm { font-weight: 600; overflow-wrap: anywhere; }
+.dogitem .sub { font-size: .82rem; color: var(--muted); }
+.dogitem .chev { margin-left: auto; color: var(--muted); font-size: 1.3rem; }
+.dogitem.retired .nm { color: var(--muted); }
+.dogitem.retired .av { opacity: .6; }
+.addbtn { min-height: 2.9rem; padding: 0 1rem; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 600; flex: none; }
+.addbtn.wide { width: 100%; min-height: 3.2rem; }
+.photo-edit { display: flex; align-items: center; gap: 16px; }
+.photo-actions { display: grid; gap: 2px; justify-items: start; }
+.photo-actions .pick { color: var(--accent); font-weight: 600; cursor: pointer; padding: .35rem 0; position: relative; }
+.photo-actions input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-actions .pick:focus-within { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.hwlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.hwlist li, .addrow { display: flex; gap: 8px; align-items: center; }
+.hwlist .textin, .addrow .textin { flex: 1; min-width: 0; }
+.rm { color: var(--danger); font-weight: 600; font-size: .9rem; padding: .4rem .2rem; flex: none; }
+.filepick { position: relative; cursor: pointer; }
+.filepick input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.filepick:focus-within { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.restore-in { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: .65rem .75rem; font-size: 1rem; min-height: 6rem; resize: vertical; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: calc(var(--bar-h) + 12px); transform: translate(-50%, 12px); z-index: 30; max-width: min(440px, calc(100% - 32px)); background: var(--fg); color: var(--bg);
+  padding: .65rem 1rem; border-radius: 12px; font-size: .9rem; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .scrim, .toast, .entry { transition: none; }
+  .status.pulse { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="titlebar">
+      <h1>History</h1>
+      <div class="headbtns">
+        <button class="proto" id="exportBtn" type="button">Export</button>      </div>
+    </div>
+    <div class="filter" id="filter" aria-label="Show entries for"></div>
+  </header>
+  <main id="history" aria-live="polite"></main>
+</div>
+
+<nav class="bar" id="bar" aria-label="Log">
+  <div class="bar-inner">
+    <button class="secondary" id="logSession" type="button">Log a training session</button>
+    <button class="primary" id="logReaction" type="button">Log a reaction</button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+
+<!-- Log a reaction -->
+<section class="sheet" id="rxSheet" role="dialog" aria-modal="true" aria-labelledby="rxTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <label class="timepick"><span class="sr">When it happened</span><select id="rxWhen"></select></label>
+    <div class="status" id="rxStatus" aria-live="polite">Each tap saves</div>
+    <button class="done" id="rxDone" type="button">Done</button>
+  </div>
+  <div class="sheet-body">
+    <h2 class="q" id="rxTitle">What did you notice?</h2>
+    <div class="chips" id="rxTriggers"></div>
+    <input class="textin" id="rxCustom" type="text" autocomplete="off" enterkeyhint="done" aria-label="What did you notice?" placeholder="What was it? For example, kids on scooters" hidden>
+    <div id="rxDogs" style="display:grid;gap:18px"></div>
+    <label class="field"><span class="flabel">Note</span>
+      <textarea id="rxNote" rows="2" placeholder="Optional. Tap the mic on the keyboard to dictate."></textarea></label>
+    <button class="danger" id="rxDelete" type="button" hidden>Delete entry</button>
+  </div>
+</section>
+
+<!-- Log a training session -->
+<section class="sheet" id="ssSheet" role="dialog" aria-modal="true" aria-labelledby="ssTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <button class="ghost" id="ssCancel" type="button">Cancel</button>
+    <h2 class="sheet-title" id="ssTitle">Training session</h2>
+    <button class="done" id="ssSave" type="button" disabled>Save</button>
+  </div>
+  <div class="sheet-body">
+    <div class="group"><span class="flabel">Dog</span><div class="seg" id="ssDog"></div></div>
+    <div class="group"><span class="flabel">Homework</span><div class="chips" id="ssEx"></div>
+      <input class="textin" id="ssCustom" type="text" autocomplete="off" enterkeyhint="done" aria-label="Other homework" placeholder="What did you practice?" hidden></div>
+    <div class="group"><span class="flabel">Duration</span>
+      <div class="stepper">
+        <button id="ssMinus" type="button" aria-label="One minute less">&minus;</button>
+        <input id="ssMin" class="mins" type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="600" step="1" aria-label="Minutes"><span class="unit">min</span>
+        <button id="ssPlus" type="button" aria-label="One minute more">+</button>
+      </div>
+    </div>
+    <div class="group"><span class="flabel">When</span><div class="seg" id="ssDay"></div>
+      <input class="textin" id="ssDate" type="date" aria-label="Session date" hidden></div>
+    <label class="field"><span class="flabel">How it went</span>
+      <textarea id="ssNote" rows="3" placeholder="Optional. Looked back on the first cue in the driveway…"></textarea></label>
+    <p class="preview" id="ssPreview"></p>
+    <button class="danger" id="ssDelete" type="button" hidden>Delete entry</button>
+  </div>
+</section>
+
+<!-- Dogs -->
+<section class="sheet" id="dgSheet" role="dialog" aria-modal="true" aria-labelledby="dgTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <span><button class="backbtn" id="dgBack" type="button" hidden>&lsaquo; Dogs</button></span>
+    <h2 class="sheet-title" id="dgTitle">Dogs</h2>
+    <button class="done" id="dgDone" type="button">Done</button>
+  </div>
+  <div class="sheet-body" id="dgBody"></div>
+</section>
+
+<!-- Export -->
+<section class="sheet" id="exSheet" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <span></span>
+    <h2 class="sheet-title" id="exTitle">Export</h2>
+    <button class="done" id="exDone" type="button">Done</button>
+  </div>
+  <div class="sheet-body">
+    <div class="group"><span class="flabel">Format</span><div class="seg" id="exFmt"></div><p class="hint" id="exFmtHint"></p></div>
+    <div class="group" id="exRangeGroup"><span class="flabel">Dates</span><div class="seg" id="exRange"></div>
+      <div class="daterow two" id="exCustomRow" hidden>
+        <label>From <input class="textin" type="date" id="exFrom"></label>
+        <label>To <input class="textin" type="date" id="exTo"></label>
+      </div>
+    </div>
+    <div class="group">
+      <div class="previewhead"><span class="flabel" id="exPrevLabel">Preview</span><span class="meta" id="exMeta"></span></div>
+      <pre class="out" id="exOut"></pre>
+    </div>
+    <button class="copybtn" id="exCopy" type="button">Share message</button>
+    <button class="linkbtn" id="exCopyAlt" type="button">Copy instead</button>
+    <div class="group" id="exRestore" hidden>
+      <span class="flabel">Restore from a backup</span>
+      <label class="linkbtn filepick">Choose a backup file<input type="file" id="exFile" accept=".json,application/json,text/plain"></label>
+      <textarea class="restore-in" id="exIn" rows="4" placeholder="Or paste a backup here" aria-label="Backup to restore"></textarea>
+      <p class="hint" id="exInMsg">Restoring replaces every entry and dog on this phone with the ones in the backup.</p>
+      <div class="btnrow"><button type="button" id="exRestoreBtn">Replace all entries with this backup</button></div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  const KEY = 'luna-sicari-log-v1';
+  // Starting dogs. After the first load, dogs live in state.dogs and are edited on the Dogs screen.
+  const DEFAULT_DOGS = [
+    { id: 'luna', name: 'Luna', color: 'a', homework: ['Sit', 'Come', 'Heel', 'Eyes', 'Be a Tree'] },
+    { id: 'sicari', name: 'Sicari', color: 'b', homework: ['Sit', 'Come', 'Heel', 'Eyes', 'Be a Tree', 'Hand feeding', 'Potty training'] }
+  ];
+  const COLORS = ['a', 'b', 'c', 'd'];
+  const defaultDogs = () => DEFAULT_DOGS.map(d => Object.assign({}, d, { homework: d.homework.slice(), retired: false }));
+  const activeDogs = () => state.dogs.filter(d => !d.retired);
+  const dogById = id => state.dogs.find(d => d.id === id) || { id: id, name: 'Unknown dog', color: 'a', homework: [], retired: true };
+  const homework = id => dogById(id).homework;
+  const touches = (e, id) => e.kind === 'reaction' ? !!e.resp[id] : e.dog === id;
+  const entriesFor = id => state.entries.filter(e => touches(e, id)).length;
+  function joinWith(a, word) { return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' ' + word + ' ' + a[a.length - 1]; }
+  const BASE_TRIGGERS = ['Delivery', 'Doorbell', 'Person passing', 'Dog passing', 'Family home', 'Noise outside'];
+  const DIDNT = 'Didn’t see';
+  // Anything typed under "Something else" becomes its own button next time, so the same trigger keeps the same name.
+  function triggerList() {
+    const l = BASE_TRIGGERS.slice();
+    (state.customTriggers || []).forEach(t => { if (!l.includes(t)) l.push(t); });
+    l.push(DIDNT);
+    return l;
+  }
+  const R = {
+    greet: { label: 'Mom’s home!', sub: 'High greeting bark', quote: true },
+    alert: { label: 'Who’s that?', sub: 'Questioning bark', quote: true },
+    angry: { label: 'I’m pissed', sub: 'Deep, guttural bark', quote: true },
+    calm: { label: 'Calm', sub: 'Noticed it, stayed calm' },
+    other: { label: 'Other', sub: 'Growl, whine, lunge…' }
+  };
+  const BARKS = ['greet', 'alert', 'angry'];
+  const QUIET = ['calm', 'other'];
+  const WHEN = [[0, 'Now'], [2, '2 min ago'], [5, '5 min ago'], [15, '15 min ago'], [30, '30 min ago'], [60, '1 hour ago']];
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const fmtTime = t => new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const isoDay = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  const secs = ms => (ms / 1000).toFixed(1) + ' s';
+  function joinList(a) { return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  function dayStart(t) { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function dayLabel(t) {
+    const diff = Math.round((dayStart(Date.now()) - dayStart(t)) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    return new Date(t).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+  }
+  function fresh() {
+    return { v: 1, entries: [], dogs: defaultDogs(), photos: {}, filter: 'all', lastDog: 'luna', customTriggers: [], lastBackup: null };
+  }
+  function load() { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1 && Array.isArray(s.entries)) return s; } catch (e) {} return null; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  let state = load() || fresh();
+  state.customTriggers = state.customTriggers || [];
+  // Earlier versions kept Luna and Sicari built in, with typed homework stored separately. Fold that into the dog list.
+  if (!Array.isArray(state.dogs)) {
+    state.dogs = defaultDogs();
+    const typed = state.customEx || {};
+    state.dogs.forEach(d => (typed[d.id] || []).forEach(x => { if (!d.homework.includes(x)) d.homework.push(x); }));
+  }
+  delete state.customEx; delete state.lastAppt;
+  let highlightId = null;
+  const find = id => state.entries.find(e => e.id === id);
+  const removeEntry = id => { state.entries = state.entries.filter(e => e.id !== id); };
+
+  function avatarFor(d, cls) {
+    const p = state.photos[d.id];
+    return p ? `<img class="av ${cls || ''}" src="${p}" alt="">`
+      : `<span class="av av-${COLORS.includes(d.color) ? d.color : 'a'} ${cls || ''}" aria-hidden="true">${esc((d.name || '?').charAt(0).toUpperCase())}</span>`;
+  }
+  const avatar = (id, cls) => avatarFor(dogById(id), cls);
+  const respText = k => R[k].quote ? `“${R[k].label}”` : R[k].label;
+  const exOrder = (dog, ex) => { const hw = homework(dog); return hw.filter(x => ex.includes(x)).concat(ex.filter(x => !hw.includes(x))); };
+
+  /* ---------- Text size ---------- */
+  function applySize() { measureBar(); }
+  function measureBar() { requestAnimationFrame(() => document.documentElement.style.setProperty('--bar-h', $('#bar').offsetHeight + 'px')); }
+  window.addEventListener('resize', measureBar);
+
+  /* ---------- History ---------- */
+  function renderFilter() {
+    if (state.filter !== 'all' && !activeDogs().some(d => d.id === state.filter)) state.filter = 'all';
+    const items = [['all', 'All']].concat(activeDogs().map(d => [d.id, d.name]));
+    $('#filter').innerHTML = items.map(([id, name]) =>
+      `<button type="button" class="${id === 'all' ? 'all' : ''}" data-filter="${esc(id)}" aria-pressed="${state.filter === id}">${id === 'all' ? '' : avatar(id, 'xs')}${esc(name)}</button>`).join('')
+      + `<button type="button" class="editchip" data-editdogs>Edit</button>`;
+  }
+  function entryHTML(e) {
+    let head, lines;
+    if (e.kind === 'reaction') {
+      head = e.trigger ? `<span class="what">${esc(e.trigger)}</span>` : `<span class="needs">Add what you noticed</span>`;
+      const rows = state.dogs.filter(d => e.resp[d.id]);
+      lines = rows.length
+        ? rows.map(d => `<div class="line">${avatar(d.id, 'sm')}<span><b>${esc(d.name)}</b> — ${esc(respText(e.resp[d.id]))}</span></div>`).join('')
+        : `<div class="line"><span class="none">No dog responses recorded</span></div>`;
+    } else {
+      head = `<span class="what">Training</span>`;
+      lines = `<div class="line">${avatar(e.dog, 'sm')}<span><b>${esc(dogById(e.dog).name)}</b> — ${e.min} min · ${esc(joinList(exOrder(e.dog, e.ex)))}</span></div>`;
+    }
+    const note = e.note && e.note.trim() ? `<p class="note">${esc(e.note)}</p>` : '';
+    return `<li><button type="button" class="entry${e.id === highlightId ? ' just' : ''}" data-id="${e.id}"><div class="head"><time>${fmtTime(e.at)}</time><span class="dot">·</span>${head}</div>${lines}${note}</button></li>`;
+  }
+  function renderHistory() {
+    const f = state.filter;
+    const list = state.entries
+      .filter(e => f === 'all' || (e.kind === 'reaction' ? !!e.resp[f] : e.dog === f))
+      .sort((a, b) => b.at - a.at);
+    let html = '';
+    if (!list.length) {
+      const names = activeDogs().map(d => d.name);
+      html += `<p class="empty">${f !== 'all' ? 'Nothing logged for ' + esc(dogById(f).name) + ' yet.'
+        : names.length ? 'Nothing logged yet. Tap <b>Log a reaction</b> the next time ' + esc(joinWith(names, 'or')) + ' notices something.'
+        : 'Add a dog with <b>Edit</b>, next to the filters above, to start logging.'}</p>`;
+    } else {
+      let cur = null;
+      list.forEach(e => {
+        const k = dayStart(e.at);
+        if (k !== cur) { if (cur !== null) html += '</ul></section>'; html += `<section class="day"><h2>${dayLabel(e.at)}</h2><ul>`; cur = k; }
+        html += entryHTML(e);
+      });
+      html += '</ul></section>';
+    }
+    $('#history').innerHTML = html;
+    if (highlightId) {
+      const el = document.querySelector(`.entry[data-id="${highlightId}"]`);
+      highlightId = null;
+      if (el) { el.scrollIntoView({ block: 'nearest' }); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('just'))); }
+    }
+  }
+  $('#filter').addEventListener('click', ev => {
+    if (ev.target.closest('[data-editdogs]')) { openDogs(); return; }
+    const b = ev.target.closest('[data-filter]'); if (!b) return;
+    state.filter = b.dataset.filter; save(); renderFilter(); renderHistory();
+  });
+  $('#history').addEventListener('click', ev => {
+    const b = ev.target.closest('.entry'); if (!b) return;
+    const e = find(b.dataset.id); if (!e) return;
+    if (e.kind === 'reaction') openReaction(e); else openSession(e);
+  });
+
+  /* ---------- Sheets ---------- */
+  let openSheetId = null;
+  function showSheet(id) {
+    openSheetId = id;
+    $('#scrim').classList.add('open'); $('#' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function hideSheet() {
+    if (!openSheetId) return;
+    $('#' + openSheetId).classList.remove('open'); $('#scrim').classList.remove('open');
+    document.body.style.overflow = ''; openSheetId = null;
+  }
+  $('#scrim').addEventListener('click', () => {
+    if (openSheetId === 'rxSheet') closeReaction();
+    else if (openSheetId === 'ssSheet') closeSession();
+    else if (openSheetId === 'dgSheet') closeDogs();
+    else hideSheet();
+  });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && openSheetId) $('#scrim').click(); });
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function arm(btn, label, armedLabel, action) {
+    if (btn.classList.contains('armed')) { btn.classList.remove('armed'); btn.textContent = label; clearTimeout(btn._t); action(); return; }
+    btn.classList.add('armed'); btn.textContent = armedLabel;
+    clearTimeout(btn._t); btn._t = setTimeout(() => { btn.classList.remove('armed'); btn.textContent = label; }, 3000);
+  }
+
+  /* ---------- Log a reaction ---------- */
+  let rx = null;
+  function summarize(e) {
+    const parts = [e.trigger || 'Nothing noted'];
+    state.dogs.forEach(d => { if (e.resp[d.id]) parts.push(`${d.name}: ${R[e.resp[d.id]].label}`); });
+    return parts.join(' · ');
+  }
+  function buildReactionSheet(entry) {
+    $('#rxTriggers').innerHTML = triggerList().map(t => `<button type="button" class="chip" data-trigger="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')
+      + `<button type="button" class="chip more" data-custom aria-pressed="false">Something else…</button>`;
+    const btn = (dog, k) => `<button type="button" class="rbtn" data-dog="${esc(dog)}" data-resp="${k}" aria-pressed="false"><span class="rl">${R[k].label}</span><span class="rs">${R[k].sub}</span></button>`;
+    // Active dogs, plus a retired dog when the entry being edited already has their response.
+    const dogs = state.dogs.filter(d => !d.retired || (entry && entry.resp[d.id]));
+    $('#rxDogs').innerHTML = dogs.map(d => `
+      <div class="dogrow" role="group" aria-label="How did ${esc(d.name)} react?">
+        <div class="dogname">${avatar(d.id, 'lg')}<span class="dn">${esc(d.name)}</span></div>
+        <div class="resp barks">${BARKS.map(k => btn(d.id, k)).join('')}</div>
+        <div class="resp quiet">${QUIET.map(k => btn(d.id, k)).join('')}</div>
+      </div>`).join('');
+  }
+  function openReaction(entry) {
+    if (!entry && !activeDogs().length) { toast('Add a dog first.'); openDogs(); return; }
+    buildReactionSheet(entry);
+    rx = {
+      id: entry ? entry.id : null, isNew: !entry, openedAt: Date.now(), t0: performance.now(), taps: 1, firstSave: null,
+      trigger: entry ? entry.trigger : null, resp: entry ? Object.assign({}, entry.resp) : {}, note: entry ? entry.note : '', offset: 0
+    };
+    const opts = (entry ? [['keep', fmtTime(entry.at)]] : []).concat(WHEN);
+    $('#rxWhen').innerHTML = opts.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+    rx.customMode = !!(rx.trigger && !triggerList().includes(rx.trigger));
+    $('#rxCustom').value = rx.customMode ? rx.trigger : '';
+    $('#rxNote').value = rx.note || '';
+    syncReaction(false);
+    showSheet('rxSheet');
+  }
+  function syncReaction(pulse) {
+    document.querySelectorAll('#rxTriggers [data-trigger]').forEach(b => b.setAttribute('aria-pressed', String(!rx.customMode && b.dataset.trigger === rx.trigger)));
+    $('#rxTriggers [data-custom]').setAttribute('aria-pressed', String(rx.customMode));
+    $('#rxCustom').hidden = !rx.customMode;
+    document.querySelectorAll('#rxDogs .rbtn').forEach(b => b.setAttribute('aria-pressed', String(rx.resp[b.dataset.dog] === b.dataset.resp)));
+    const st = $('#rxStatus'), e = rx.id && find(rx.id);
+    if (e) { st.textContent = '✓ Saved ' + fmtTime(e.at); st.classList.add('saved'); }
+    else { st.textContent = 'Each tap saves'; st.classList.remove('saved'); }
+    if (pulse) { st.classList.remove('pulse'); void st.offsetWidth; st.classList.add('pulse'); }
+    $('#rxDelete').hidden = !e;
+  }
+  function commitReaction() {
+    const empty = !rx.trigger && !Object.keys(rx.resp).length && !(rx.note || '').trim();
+    let e = rx.id && find(rx.id);
+    if (empty) {
+      if (e) { removeEntry(rx.id); rx.id = null; }
+    } else if (!e) {
+      e = { id: uid(), kind: 'reaction', at: rx.openedAt - rx.offset * 60000, trigger: rx.trigger, resp: Object.assign({}, rx.resp), note: rx.note };
+      state.entries.push(e); rx.id = e.id;
+      if (rx.firstSave == null) rx.firstSave = performance.now() - rx.t0;
+    } else {
+      e.trigger = rx.trigger; e.resp = Object.assign({}, rx.resp); e.note = rx.note;
+    }
+    save(); renderHistory(); syncReaction(true);
+  }
+  $('#rxSheet').addEventListener('click', ev => {
+    const c = ev.target.closest('[data-custom]');
+    const t = ev.target.closest('[data-trigger]');
+    const r = ev.target.closest('[data-resp]');
+    if (c) {
+      rx.taps++; rx.customMode = !rx.customMode;
+      rx.trigger = rx.customMode ? ($('#rxCustom').value.trim() || null) : null;
+      commitReaction();
+      if (rx.customMode) $('#rxCustom').focus();
+    }
+    else if (t) { rx.taps++; const was = !rx.customMode && rx.trigger === t.dataset.trigger; rx.customMode = false; rx.trigger = was ? null : t.dataset.trigger; commitReaction(); }
+    else if (r) {
+      rx.taps++;
+      const d = r.dataset.dog, k = r.dataset.resp;
+      if (rx.resp[d] === k) delete rx.resp[d]; else rx.resp[d] = k;
+      commitReaction();
+    }
+  });
+  $('#rxWhen').addEventListener('change', ev => {
+    const v = ev.target.value; if (v === 'keep') return;
+    rx.taps++; rx.offset = +v;
+    const e = rx.id && find(rx.id);
+    if (e) { e.at = (rx.isNew ? rx.openedAt : Date.now()) - rx.offset * 60000; save(); renderHistory(); syncReaction(true); }
+  });
+  $('#rxNote').addEventListener('input', ev => { rx.note = ev.target.value; commitReaction(); });
+  $('#rxCustom').addEventListener('input', ev => { rx.trigger = ev.target.value.trim() || null; commitReaction(); });
+  $('#rxCustom').addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); ev.target.blur(); } });
+  $('#rxDelete').addEventListener('click', ev => arm(ev.currentTarget, 'Delete entry', 'Tap again to delete', () => {
+    if (rx.id) removeEntry(rx.id); save();
+    rx.id = null; rx.isNew = false; hideSheet(); rx = null; renderHistory(); toast('Entry deleted');
+  }));
+  function closeReaction() {
+    if (!rx) return;
+    const e = rx.id && find(rx.id);
+    if (e) {
+      if (rx.customMode && e.trigger && !triggerList().includes(e.trigger)) state.customTriggers.push(e.trigger);
+      save(); highlightId = e.id;
+      toast((rx.isNew ? 'Saved · ' : 'Updated · ') + summarize(e));
+    }
+    hideSheet(); rx = null; renderHistory();
+  }
+  $('#rxDone').addEventListener('click', closeReaction);
+  $('#logReaction').addEventListener('click', () => openReaction(null));
+
+  /* ---------- Log a training session ---------- */
+  let ss = null;
+  const ymd = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  function openSession(entry) {
+    const act = activeDogs();
+    if (!entry && !act.length) { toast('Add a dog first.'); openDogs(); return; }
+    let when = 0;
+    if (entry) { const diff = Math.round((dayStart(Date.now()) - dayStart(entry.at)) / 86400000); when = diff === 0 ? 0 : diff === 1 ? 1 : 'date'; }
+    ss = {
+      id: entry ? entry.id : null, at: entry ? entry.at : null, dog: entry ? entry.dog : (act.some(d => d.id === state.lastDog) ? state.lastDog : act[0].id),
+      ex: entry ? entry.ex.slice() : [], otherOn: false, other: '', min: entry ? entry.min : 5,
+      when: when, date: ymd(entry ? entry.at : Date.now()), note: entry ? (entry.note || '') : ''
+    };
+    $('#ssTitle').textContent = entry ? 'Edit session' : 'Training session';
+    $('#ssNote').value = ss.note;
+    $('#ssMin').value = ss.min;
+    $('#ssCustom').value = '';
+    $('#ssDate').max = ymd(Date.now());
+    $('#ssDate').value = ss.date;
+    $('#ssDelete').hidden = !entry;
+    renderSession();
+    showSheet('ssSheet');
+  }
+  function targetDayStart() {
+    if (ss.when === 0) return dayStart(Date.now());
+    if (ss.when === 1) return dayStart(Date.now() - 86400000);
+    const p = ss.date.split('-').map(Number);
+    return new Date(p[0], p[1] - 1, p[2]).getTime();
+  }
+  function sessionExercises() {
+    const list = exOrder(ss.dog, ss.ex);
+    const o = ss.otherOn ? ss.other.trim() : '';
+    if (o && !list.some(x => x.toLowerCase() === o.toLowerCase())) list.push(o);
+    return list;
+  }
+  function sessionProblem() {
+    const n = Number(ss.min);
+    if (!sessionExercises().length) return 'Choose the homework you practiced, or type it under Something else.';
+    if (String(ss.min).trim() === '' || !Number.isInteger(n) || n < 1 || n > 600) return 'Enter the minutes as a whole number, like 6.';
+    if (ss.when === 'date' && (!/^\d{4}-\d{2}-\d{2}$/.test(ss.date) || targetDayStart() > dayStart(Date.now()))) return 'Choose a date that isn’t in the future.';
+    return '';
+  }
+  function renderSession() {
+    $('#ssDog').innerHTML = state.dogs.filter(d => !d.retired || d.id === ss.dog)
+      .map(d => `<button type="button" data-sdog="${esc(d.id)}" aria-pressed="${ss.dog === d.id}">${avatar(d.id, 'xs')}${esc(d.name)}</button>`).join('');
+    const hw = homework(ss.dog), chips = hw.concat(ss.ex.filter(x => !hw.includes(x)));
+    $('#ssEx').innerHTML = chips.map(x => `<button type="button" class="chip" data-ex="${esc(x)}" aria-pressed="${ss.ex.includes(x)}">${esc(x)}</button>`).join('')
+      + `<button type="button" class="chip more" data-exmore aria-pressed="${ss.otherOn}">Something else…</button>`;
+    $('#ssCustom').hidden = !ss.otherOn;
+    $('#ssDay').innerHTML = [[0, 'Today'], [1, 'Yesterday'], ['date', 'Other date']].map(([v, l]) => `<button type="button" data-day="${v}" aria-pressed="${ss.when === v}">${l}</button>`).join('');
+    $('#ssDate').hidden = ss.when !== 'date';
+    const problem = sessionProblem();
+    $('#ssSave').disabled = !!problem;
+    if (problem) $('#ssPreview').textContent = problem;
+    else {
+      const on = ss.when === 'date' ? ' on ' + new Date(targetDayStart()).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) : '';
+      $('#ssPreview').innerHTML = `Saves as <b>${esc(dogById(ss.dog).name)} —${Number(ss.min)} min · ${esc(joinList(sessionExercises()))}</b>${esc(on)}`;
+    }
+  }
+  $('#ssSheet').addEventListener('click', ev => {
+    const d = ev.target.closest('[data-sdog]'), x = ev.target.closest('[data-ex]'), m = ev.target.closest('[data-exmore]'), y = ev.target.closest('[data-day]');
+    if (d) { ss.dog = d.dataset.sdog; ss.ex = ss.ex.filter(e => homework(ss.dog).includes(e)); renderSession(); }
+    else if (x) { const k = x.dataset.ex; ss.ex = ss.ex.includes(k) ? ss.ex.filter(e => e !== k) : ss.ex.concat(k); renderSession(); }
+    else if (m) { ss.otherOn = !ss.otherOn; renderSession(); if (ss.otherOn) $('#ssCustom').focus(); }
+    else if (y) { const v = y.dataset.day; ss.when = v === 'date' ? 'date' : +v; renderSession(); if (ss.when === 'date') $('#ssDate').focus(); }
+  });
+  function stepMin(delta) { const n = Math.round(Number(ss.min)) || 0; ss.min = Math.min(600, Math.max(1, n + delta)); $('#ssMin').value = ss.min; renderSession(); }
+  $('#ssMinus').addEventListener('click', () => stepMin(-1));
+  $('#ssPlus').addEventListener('click', () => stepMin(1));
+  $('#ssMin').addEventListener('input', ev => { ss.min = ev.target.value; renderSession(); });
+  $('#ssMin').addEventListener('focus', ev => { try { ev.target.select(); } catch (e) {} });
+  $('#ssCustom').addEventListener('input', ev => { ss.other = ev.target.value; renderSession(); });
+  ['input', 'change'].forEach(type => $('#ssDate').addEventListener(type, ev => { ss.date = ev.target.value; renderSession(); }));
+  ['#ssCustom', '#ssMin'].forEach(sel => $(sel).addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); ev.target.blur(); } }));
+  $('#ssNote').addEventListener('input', ev => { ss.note = ev.target.value; });
+  function closeSession() { hideSheet(); ss = null; }
+  $('#ssCancel').addEventListener('click', closeSession);
+  $('#ssSave').addEventListener('click', () => {
+    if (sessionProblem()) return;
+    const ex = sessionExercises(), target = targetDayStart();
+    let when;
+    if (ss.at && dayStart(ss.at) === target) when = ss.at;
+    else { const now = new Date(), d = new Date(target); d.setHours(now.getHours(), now.getMinutes(), 0, 0); when = d.getTime(); }
+    const data = { kind: 'session', at: when, dog: ss.dog, ex: ex, min: Number(ss.min), note: ss.note };
+    let e = ss.id && find(ss.id);
+    if (e) Object.assign(e, data); else { e = Object.assign({ id: uid() }, data); state.entries.push(e); }
+    const typed = ss.otherOn ? ss.other.trim() : '';
+    // Typed homework joins that dog's list, so it is a button next time.
+    if (typed && !homework(ss.dog).some(x => x.toLowerCase() === typed.toLowerCase())) homework(ss.dog).push(typed);
+    state.lastDog = ss.dog; save(); highlightId = e.id;
+    toast(`Saved for ${dogById(ss.dog).name} ·${data.min} min · ${joinList(ex)}`);
+    closeSession(); renderHistory();
+  });
+  $('#ssDelete').addEventListener('click', ev => arm(ev.currentTarget, 'Delete entry', 'Tap again to delete', () => {
+    if (ss && ss.id) removeEntry(ss.id); save(); closeSession(); renderHistory(); toast('Entry deleted');
+  }));
+  $('#logSession').addEventListener('click', () => openSession(null));
+
+  /* ---------- Export ---------- */
+  // The trainer's names for the barks. House labels stay in the app and the spreadsheet.
+  const TERM = { greet: 'Greeting', alert: 'Questioning', angry: 'Deep', calm: 'Calm', other: 'Other' };
+  const NO_TRIGGER = 'No trigger noted';
+  const FORMATS = {
+    message: { label: 'Message', prev: 'Message preview', share: 'Share message',
+      hint: 'A short summary for the trainer. Share opens the iPhone share sheet, so you can send it in Messages.',
+      done: 'Copied. Paste it into Messages.' },
+    csv: { label: 'Spreadsheet', prev: 'Spreadsheet rows (CSV)', share: 'Share spreadsheet file',
+      hint: 'One row per dog per moment. Share sends a .csv file you can AirDrop to your Mac or save to Files. Copy instead pastes straight into Numbers, Excel or Google Sheets.',
+      done: 'Copied. Paste it into a spreadsheet.' },
+    json: { label: 'Backup', prev: 'Backup', share: 'Share backup file',
+      hint: 'Everything in the log, all dates, including your dogs and their homework lists. The log lives only on this phone, so save a backup to Files or AirDrop it to your Mac now and then. Dog photos aren’t included.',
+      done: 'Copied. Paste it somewhere safe, like a note.' }
+  };
+  const RANGES = [['week', 'Last week'], ['all', 'All'], ['custom', 'Custom']];
+  let ex = null;
+  const shortDay = t => new Date(t).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+  const hhmm = t => { const d = new Date(t); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+  const parseDay = s => { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return null; const p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]).getTime(); };
+  const plural = (n, one, many) => n + ' ' + (n === 1 ? one : (many || one + 's'));
+  const sum = m => Object.values(m).reduce((a, b) => a + b, 0);
+  const oneLine = s => String(s || '').trim().replace(/\s*\n+\s*/g, ' ');
+
+  function rangeBounds() {
+    const todayEnd = dayStart(Date.now()) + 86400000 - 1;
+    if (ex.range === 'week') return { from: dayStart(Date.now()) - 6 * 86400000, to: todayEnd };
+    if (ex.range === 'all') {
+      const first = state.entries.length ? Math.min.apply(null, state.entries.map(e => e.at)) : Date.now();
+      return { from: dayStart(first), to: todayEnd };
+    }
+    const f = parseDay(ex.from), t = parseDay(ex.to);
+    if (f == null || t == null) return { error: 'Choose both a start and an end date.' };
+    if (f > t) return { error: 'The start date is after the end date.' };
+    return { from: f, to: t + 86400000 - 1 };
+  }
+  function rangeLabel(b) {
+    const a = new Date(b.from), z = new Date(b.to), y = new Date().getFullYear();
+    const o = a.getFullYear() === y && z.getFullYear() === y ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' };
+    const s1 = a.toLocaleDateString([], o), s2 = z.toLocaleDateString([], o);
+    return s1 === s2 ? s1 : s1 + ' – ' + s2;
+  }
+  const inRange = b => state.entries.filter(e => e.at >= b.from && e.at <= b.to).sort((x, y) => x.at - y.at);
+
+  function buildMessage(b) {
+    const list = inRange(b);
+    // Every active dog, plus retired dogs that have entries in this range.
+    const dogs = state.dogs.filter(d => !d.retired || list.some(e => touches(e, d.id)));
+    const out = [(dogs.length ? joinWith(dogs.map(d => d.name), '&') : 'Dog log') + ' · ' + rangeLabel(b)];
+    dogs.forEach(d => {
+      const rxs = list.filter(e => e.kind === 'reaction' && e.resp[d.id]);
+      const sss = list.filter(e => e.kind === 'session' && e.dog === d.id);
+      out.push('', d.name.toUpperCase() + ' · ' + plural(rxs.length, 'reaction') + ' logged');
+      const groups = {};
+      rxs.forEach(e => {
+        const k = e.trigger || NO_TRIGGER, t = TERM[e.resp[d.id]];
+        groups[k] = groups[k] || {}; groups[k][t] = (groups[k][t] || 0) + 1;
+      });
+      const atEnd = k => (k === DIDNT || k === NO_TRIGGER) ? 1 : 0;
+      Object.keys(groups)
+        .sort((a, c) => atEnd(a) - atEnd(c) || sum(groups[c]) - sum(groups[a]))
+        .forEach(k => out.push('• ' + k + ' (' + sum(groups[k]) + '): ' +
+          Object.entries(groups[k]).sort((a, c) => c[1] - a[1]).map(([t, n]) => t + ' ' + n).join(', ')));
+      if (sss.length) {
+        out.push('Training: ' + plural(sss.length, 'session') + ', ' + sss.reduce((s, e) => s + e.min, 0) + ' min');
+        const exc = {};
+        sss.forEach(e => e.ex.forEach(x => { exc[x] = (exc[x] || 0) + 1; }));
+        out.push(Object.entries(exc).sort((a, c) => c[1] - a[1]).map(([x, n]) => x + ' in ' + n).join(' · '));
+      } else {
+        out.push('Training: none logged');
+      }
+    });
+    const noted = list.filter(e => e.note && e.note.trim()).reverse();
+    if (noted.length) {
+      out.push('', 'NOTES');
+      noted.slice(0, 5).forEach(e => {
+        if (e.kind === 'reaction') {
+          const who = state.dogs.filter(d => e.resp[d.id]).map(d => d.name + ' ' + TERM[e.resp[d.id]]).join(', ');
+          out.push('• ' + shortDay(e.at) + ', ' + (e.trigger || NO_TRIGGER) + (who ? ' (' + who + ')' : '') + ': ' + oneLine(e.note));
+        } else {
+          out.push('• ' + shortDay(e.at) + ', ' + dogById(e.dog).name + ', ' + joinList(e.ex) + ', ' + e.min + ' min: ' + oneLine(e.note));
+        }
+      });
+      if (noted.length > 5) out.push('+' + plural(noted.length - 5, 'more note', 'more notes') + ' in the full log');
+    }
+    return out.join('\n');
+  }
+
+  const HEADER = ['date', 'time', 'kind', 'moment_id', 'dog', 'trigger', 'response', 'house_label', 'minutes', 'homework', 'note'];
+  function buildRows(b) {
+    const rows = [HEADER];
+    inRange(b).forEach(e => {
+      const base = [isoDay(e.at), hhmm(e.at)];
+      if (e.kind === 'reaction') {
+        const dogs = state.dogs.filter(d => e.resp[d.id]);
+        if (!dogs.length) rows.push(base.concat(['reaction', e.id, '', e.trigger || '', '', '', '', '', oneLine(e.note)]));
+        dogs.forEach(d => rows.push(base.concat(['reaction', e.id, d.name, e.trigger || '', TERM[e.resp[d.id]], R[e.resp[d.id]].label, '', '', oneLine(e.note)])));
+      } else {
+        rows.push(base.concat(['training', e.id, dogById(e.dog).name,'', '', '', e.min, e.ex.join('; '), oneLine(e.note)]));
+      }
+    });
+    return rows;
+  }
+  // A leading = + - @ would make a spreadsheet treat the cell as a formula.
+  const safeCell = v => { const s = v == null ? '' : String(v); return /^[=+\-@]/.test(s) ? "'" + s : s; };
+  const csvCell = v => { const s = safeCell(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const toCSV = rows => rows.map(r => r.map(csvCell).join(',')).join('\n');
+  const toTSV = rows => rows.map(r => r.map(v => safeCell(v).replace(/[\t\r\n]+/g, ' ')).join('\t')).join('\n');
+
+  function buildBackup() {
+    return JSON.stringify({
+      app: 'Luna & Sicari Log', format: 2, exported_at: new Date().toISOString(),
+      dogs: state.dogs.map(d => ({ id: d.id, name: d.name, retired: !!d.retired, color: d.color, homework: d.homework.slice() })),
+      custom_triggers: state.customTriggers.slice(),
+      entries: state.entries.slice().sort((a, b) => a.at - b.at).map(e => Object.assign({}, e, { at: new Date(e.at).toISOString() }))
+    }, null, 2);
+  }
+  function restoreBackup(text) {
+    let d;
+    try { d = JSON.parse(text); } catch (e) { return 'That isn’t a backup. Paste the whole backup, starting with the { at the top.'; }
+    if (!d || !Array.isArray(d.entries)) return 'This text has no entries. Copy it again from the Backup tab.';
+    let dogs = state.dogs.map(x => Object.assign({}, x, { homework: x.homework.slice() }));
+    if (Array.isArray(d.dogs) && d.dogs.length) {
+      dogs = [];
+      for (const x of d.dogs) {
+        if (!x || !x.id || !String(x.name || '').trim()) return 'One of the dogs in the backup has no name, so nothing was restored.';
+        dogs.push({ id: String(x.id), name: String(x.name).trim(), retired: !!x.retired,
+          color: COLORS.includes(x.color) ? x.color : COLORS[dogs.length % COLORS.length],
+          homework: Array.isArray(x.homework) ? x.homework.map(String) : [] });
+      }
+    }
+    // Older backups kept typed homework separately.
+    if (d.custom_homework && typeof d.custom_homework === 'object') {
+      Object.entries(d.custom_homework).forEach(([k, v]) => {
+        const dog = dogs.find(x => x.id === k);
+        if (dog && Array.isArray(v)) v.map(String).forEach(h => { if (!dog.homework.includes(h)) dog.homework.push(h); });
+      });
+    }
+    const known = id => dogs.some(x => x.id === id);
+    const entries = [];
+    for (const e of d.entries) {
+      const at = e && (typeof e.at === 'number' ? e.at : Date.parse(e.at));
+      if (!e || isNaN(at)) return 'One of the entries has no valid date, so nothing was restored.';
+      if (e.kind === 'reaction') {
+        const resp = {};
+        Object.entries(e.resp || {}).forEach(([k, v]) => { if (known(k) && R[v]) resp[k] = v; });
+        entries.push({ id: String(e.id || uid()), kind: 'reaction', at: at, trigger: e.trigger ? String(e.trigger) : null, resp: resp, note: String(e.note || '') });
+      } else if (e.kind === 'session' && known(e.dog)) {
+        const min = Math.round(Number(e.min));
+        entries.push({ id: String(e.id || uid()), kind: 'session', at: at, dog: e.dog, ex: Array.isArray(e.ex) ? e.ex.map(String) : [], min: min > 0 ? min : 1, note: String(e.note || '') });
+      } else {
+        return 'One of the entries isn’t a reaction or a training session for a dog in the backup, so nothing was restored.';
+      }
+    }
+    state.dogs = dogs;
+    state.entries = entries;
+    state.customTriggers = Array.isArray(d.custom_triggers) ? d.custom_triggers.map(String) : [];
+    state.sample = false;
+    save(); renderAll();
+    return '';
+  }
+
+  function openExport() {
+    ex = { fmt: FORMATS[state.exportFmt] ? state.exportFmt : 'message', range: RANGES.some(r => r[0] === state.exportRange) ? state.exportRange : 'week',
+      from: isoDay(Date.now() - 6 * 86400000), to: isoDay(Date.now()), text: '', rows: null };
+    const today = isoDay(Date.now());
+    ['#exFrom', '#exTo'].forEach(s => { $(s).max = today; });
+    $('#exFrom').value = ex.from; $('#exTo').value = ex.to;
+    $('#exIn').value = '';
+    setRestoreMsg('Restoring replaces every entry and dog on this phone with the ones in the backup.', false);
+    renderExport();
+    showSheet('exSheet');
+  }
+  function setRestoreMsg(msg, isErr) { const m = $('#exInMsg'); m.textContent = msg; m.classList.toggle('err', !!isErr); }
+  function renderExport() {
+    const f = FORMATS[ex.fmt];
+    $('#exFmt').innerHTML = Object.keys(FORMATS).map(k => `<button type="button" data-fmt="${k}" aria-pressed="${ex.fmt === k}">${FORMATS[k].label}</button>`).join('');
+    $('#exFmtHint').textContent = f.hint + (ex.fmt !== 'json' ? ''
+      : state.lastBackup ? ' Last backup: ' + shortDay(state.lastBackup) + '.' : ' No backup yet.');
+    $('#exRangeGroup').hidden = ex.fmt === 'json';
+    $('#exRange').innerHTML = RANGES.map(([k, l]) => `<button type="button" data-range="${k}" aria-pressed="${ex.range === k}">${l}</button>`).join('');
+    $('#exCustomRow').hidden = ex.range !== 'custom';
+    $('#exRestore').hidden = ex.fmt !== 'json';
+    $('#exPrevLabel').textContent = f.prev;
+    $('#exCopy').textContent = navigator.share ? f.share : 'Copy';
+    $('#exCopyAlt').hidden = !navigator.share;
+    let text = '', meta = '', err = '';
+    ex.rows = null;
+    if (ex.fmt === 'json') {
+      text = buildBackup();
+      meta = plural(state.entries.length, 'entry', 'entries');
+    } else {
+      const b = rangeBounds();
+      if (b.error) err = b.error;
+      else if (ex.fmt === 'message') {
+        text = buildMessage(b);
+        meta = plural(inRange(b).length, 'entry', 'entries') + ' · ' + plural(text.split('\n').length, 'line');
+      } else {
+        ex.rows = buildRows(b);
+        text = toCSV(ex.rows);
+        meta = plural(ex.rows.length - 1, 'row');
+      }
+    }
+    const out = $('#exOut');
+    out.textContent = err || text;
+    out.classList.toggle('mono', !err && ex.fmt !== 'message');
+    out.classList.toggle('err', !!err);
+    $('#exMeta').textContent = meta;
+    $('#exCopy').disabled = !!err;
+    $('#exCopyAlt').disabled = !!err;
+    ex.text = err ? '' : text;
+  }
+  function selectPreview() {
+    try { const r = document.createRange(); r.selectNodeContents($('#exOut')); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {}
+  }
+  function copyText(text, doneMsg) {
+    const fallback = () => { selectPreview(); toast('Couldn’t copy automatically. The text is selected, so tap Copy in the menu.'); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast(doneMsg), fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  }
+  $('#exportBtn').addEventListener('click', openExport);
+  $('#exDone').addEventListener('click', hideSheet);
+  $('#exSheet').addEventListener('click', ev => {
+    const f = ev.target.closest('[data-fmt]'), r = ev.target.closest('[data-range]');
+    if (f) { ex.fmt = f.dataset.fmt; state.exportFmt = ex.fmt; save(); renderExport(); }
+    else if (r) { ex.range = r.dataset.range; state.exportRange = ex.range; save(); renderExport(); }
+  });
+  ['input', 'change'].forEach(type => {
+    $('#exFrom').addEventListener(type, ev => { ex.from = ev.target.value; renderExport(); });
+    $('#exTo').addEventListener(type, ev => { ex.to = ev.target.value; renderExport(); });
+  });
+  function markBackup() { if (ex.fmt === 'json') { state.lastBackup = Date.now(); save(); renderExport(); } }
+  function copyCurrent() {
+    if (!ex.text) return;
+    // Spreadsheets split pasted text on tabs, not commas, so the spreadsheet copy uses tabs.
+    copyText(ex.fmt === 'csv' && ex.rows ? toTSV(ex.rows) : ex.text, FORMATS[ex.fmt].done);
+    markBackup();
+  }
+  function exportFile() {
+    const day = isoDay(Date.now());
+    if (ex.fmt === 'csv') return new File([ex.text], 'dog-log-' + day + '.csv', { type: 'text/csv' });
+    if (ex.fmt === 'json') return new File([ex.text], 'dog-log-backup-' + day + '.json', { type: 'application/json' });
+    return null;
+  }
+  async function shareCurrent() {
+    if (!ex.text) return;
+    if (!navigator.share) { copyCurrent(); return; }
+    let data = { text: ex.text };
+    if (ex.fmt !== 'message') {
+      const file = exportFile();
+      data = { files: [file], title: file.name };
+      if (!navigator.canShare || !navigator.canShare(data)) { copyCurrent(); return; }
+    }
+    try { await navigator.share(data); markBackup(); }
+    catch (e) { if (!e || e.name !== 'AbortError') toast('Sharing didn’t work. Try Copy instead.'); }
+  }
+  $('#exCopy').addEventListener('click', shareCurrent);
+  $('#exCopyAlt').addEventListener('click', copyCurrent);
+  $('#exFile').addEventListener('change', ev => {
+    const f = ev.target.files && ev.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => { $('#exIn').value = String(reader.result || ''); setRestoreMsg('Loaded ' + f.name + '. Tap Replace to restore it.', false); ev.target.value = ''; };
+    reader.onerror = () => setRestoreMsg('That file couldn’t be read. Try saving it again.', true);
+    reader.readAsText(f);
+  });
+  $('#exRestoreBtn').addEventListener('click', ev => {
+    const txt = $('#exIn').value.trim();
+    if (!txt) { setRestoreMsg('Paste a backup into the box first.', true); return; }
+    arm(ev.currentTarget, 'Replace all entries with this backup', 'Tap again to replace everything', () => {
+      const err = restoreBackup(txt);
+      if (err) { setRestoreMsg(err, true); return; }
+      $('#exIn').value = '';
+      setRestoreMsg('Backup restored. ' + plural(state.entries.length, 'entry', 'entries') + ' on this phone now.', false);
+      renderExport(); toast('Backup restored');
+    });
+  });
+
+  /* ---------- Dogs ---------- */
+  // dg.view is 'list' or 'detail'. A new dog stays a draft until it has a name.
+  let dg = null;
+  function nextColor() {
+    const used = activeDogs().map(d => d.color);
+    return COLORS.find(c => !used.includes(c)) || COLORS[state.dogs.length % COLORS.length];
+  }
+  const isDraft = () => dg && dg.dog && !state.dogs.includes(dg.dog);
+  function dropDraft() { if (isDraft()) delete state.photos[dg.dog.id]; }
+  function openDogs() { dg = { view: 'list', dog: null }; renderDogs(); showSheet('dgSheet'); }
+  function showDogList() { dropDraft(); dg.view = 'list'; dg.dog = null; renderDogs(); }
+  function closeDogs() { dropDraft(); hideSheet(); dg = null; save(); renderAll(); }
+  function persist() { if (!isDraft()) { save(); renderFilter(); renderHistory(); } }
+
+  function renderDogs() {
+    const body = $('#dgBody');
+    if (dg.view === 'list') {
+      $('#dgTitle').textContent = 'Dogs'; $('#dgBack').hidden = true;
+      const row = d => `<li><button type="button" class="dogitem${d.retired ? ' retired' : ''}" data-open="${esc(d.id)}">${avatarFor(d, 'lg')}
+        <span class="meta2"><span class="nm">${esc(d.name)}</span><span class="sub">${plural(d.homework.length, 'homework item')} · ${plural(entriesFor(d.id), 'entry', 'entries')}</span></span>
+        <span class="chev" aria-hidden="true">&rsaquo;</span></button></li>`;
+      const act = activeDogs(), ret = state.dogs.filter(d => d.retired);
+      body.innerHTML = (act.length ? `<ul class="doglist">${act.map(row).join('')}</ul>` : `<p class="hint">No active dogs. Add one to start logging.</p>`)
+        + `<button type="button" class="addbtn wide" data-act="newdog">Add a dog</button>`
+        + (ret.length ? `<div class="group"><span class="flabel">Retired</span><ul class="doglist">${ret.map(row).join('')}</ul>
+            <p class="hint">Retired dogs don’t appear when you log, but their entries stay in History and exports.</p></div>` : '');
+      return;
+    }
+    const d = dg.dog, draft = isDraft(), n = draft ? 0 : entriesFor(d.id), photo = state.photos[d.id];
+    const nm = esc(d.name || 'this dog');
+    $('#dgTitle').textContent = d.name || 'New dog'; $('#dgBack').hidden = false;
+    const others = state.dogs.filter(o => o !== d && o.homework.length);
+    const hw = d.homework.length
+      ? `<ul class="hwlist">${d.homework.map((x, i) => `<li><input class="textin" type="text" data-hw="${i}" value="${esc(x)}" autocomplete="off" enterkeyhint="done" aria-label="Homework item ${i + 1}">
+          <button type="button" class="rm" data-act="rmhw" data-i="${i}" aria-label="Remove ${esc(x)}">Remove</button></li>`).join('')}</ul>`
+      : `<p class="hint">No homework yet.${others.length ? ' Start from another dog’s list, or add items below.' : ' Add items below.'}</p>`
+        + (others.length ? `<div class="btnrow">${others.map(o => `<button type="button" data-act="copyhw" data-from="${esc(o.id)}">Copy ${esc(o.name)}’s list</button>`).join('')}</div>` : '');
+    const danger = draft ? '' : `<div class="group"><span class="flabel">${d.retired ? 'Retired' : 'Retire or delete'}</span>
+      ${d.retired
+        ? `<p class="hint">${nm} is hidden when you log. Bringing them back puts them on the logging screens again.</p><div class="btnrow"><button type="button" data-act="unretire">Bring ${nm} back</button></div>`
+        : `<p class="hint">Retiring hides ${nm} when you log. Their entries stay in History and exports, and you can bring them back.</p><div class="btnrow"><button type="button" data-act="retire">Retire ${nm}</button></div>`}
+      ${n ? `<p class="hint">${nm} has ${plural(n, 'entry', 'entries')}, so they can be retired but not deleted.</p>`
+          : `<div class="btnrow"><button type="button" data-act="deldog">Delete ${nm}</button></div>`}</div>`;
+    body.innerHTML = `
+      <div class="photo-edit">${avatarFor(d, 'xl')}<div class="photo-actions">
+        <label class="pick">${photo ? 'Change photo' : 'Choose photo'}<input type="file" accept="image/*" id="dgPhoto"></label>
+        ${photo ? '<button type="button" class="rm" data-act="rmphoto">Remove photo</button>' : ''}</div></div>
+      <label class="field"><span class="flabel">Name</span>
+        <input class="textin" id="dgName" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="Dog’s name" value="${esc(d.name)}"></label>
+      <p class="hint err" id="dgNameMsg"${d.name ? ' hidden' : ''}>${draft ? 'Type a name to add this dog.' : 'A dog needs a name.'}</p>
+      <div class="group"><span class="flabel">Homework</span>${hw}
+        <div class="addrow"><input class="textin" id="dgHwNew" type="text" autocomplete="off" enterkeyhint="done" placeholder="Add homework, like Leave it" aria-label="New homework item">
+          <button type="button" class="addbtn" data-act="addhw">Add</button></div>
+        <p class="hint">Removing an item takes it off the buttons. Past sessions keep it. Renaming an item renames it in ${nm}’s past sessions too.</p>
+      </div>${danger}`;
+  }
+  function openDog(d) { dg.view = 'detail'; dg.dog = d; renderDogs(); }
+  function addHomework() {
+    const inp = $('#dgHwNew'), v = inp.value.trim(), d = dg.dog;
+    if (!v) { inp.focus(); return; }
+    if (d.homework.some(x => x.toLowerCase() === v.toLowerCase())) { toast(v + ' is already on the list.'); return; }
+    d.homework.push(v); persist(); renderDogs(); $('#dgHwNew').focus();
+  }
+  function loadPhoto(file, done) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const S = 160, c = document.createElement('canvas'); c.width = c.height = S;
+        const s = Math.min(img.width, img.height);
+        c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, S, S);
+        try { done(c.toDataURL('image/jpeg', 0.82)); } catch (e) { toast('That photo couldn’t be used. Try another one.'); }
+      };
+      img.onerror = () => toast('That file isn’t a photo this browser can open. Try a JPEG or PNG.');
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  $('#dgSheet').addEventListener('click', ev => {
+    const o = ev.target.closest('[data-open]'), a = ev.target.closest('[data-act]');
+    if (o) { openDog(dogById(o.dataset.open)); return; }
+    if (!a) return;
+    const act = a.dataset.act, d = dg.dog;
+    if (act === 'newdog') {
+      openDog({ id: 'd' + uid(), name: '', color: nextColor(), homework: [], retired: false });
+      $('#dgName').focus();
+    } else if (act === 'addhw') addHomework();
+    else if (act === 'rmhw') {
+      const x = d.homework.splice(+a.dataset.i, 1)[0];
+      persist(); renderDogs(); toast('Removed ' + x + '. Past sessions keep it.');
+    } else if (act === 'copyhw') { d.homework = dogById(a.dataset.from).homework.slice(); persist(); renderDogs(); }
+    else if (act === 'rmphoto') { delete state.photos[d.id]; persist(); renderDogs(); }
+    else if (act === 'retire') { d.retired = true; persist(); renderDogs(); toast(d.name + ' retired'); }
+    else if (act === 'unretire') { d.retired = false; persist(); renderDogs(); toast(d.name + ' is back'); }
+    else if (act === 'deldog') {
+      arm(a, 'Delete ' + d.name, 'Tap again to delete', () => {
+        state.dogs = state.dogs.filter(x => x !== d); delete state.photos[d.id];
+        save(); renderFilter(); renderHistory(); dg.dog = null; showDogList(); toast(d.name + ' deleted');
+      });
+    }
+  });
+  $('#dgSheet').addEventListener('input', ev => {
+    if (ev.target.id !== 'dgName') return;
+    const d = dg.dog, v = ev.target.value.trim();
+    $('#dgNameMsg').hidden = !!v;
+    if (!v) return; // keep the old name until a new one is typed
+    d.name = v;
+    $('#dgTitle').textContent = v;
+    const letter = document.querySelector('#dgBody .photo-edit span.av'); if (letter) letter.textContent = v.charAt(0).toUpperCase();
+    if (isDraft()) { state.dogs.push(d); save(); renderFilter(); renderHistory(); }
+    else persist();
+  });
+  $('#dgSheet').addEventListener('change', ev => {
+    const t = ev.target, d = dg && dg.dog; if (!d) return;
+    if (t.id === 'dgName') {
+      if (!t.value.trim() && d.name) { t.value = d.name; $('#dgNameMsg').hidden = true; }
+    } else if (t.id === 'dgPhoto') {
+      if (t.files && t.files[0]) loadPhoto(t.files[0], url => { state.photos[d.id] = url; persist(); renderDogs(); });
+    } else if (t.dataset && t.dataset.hw != null) {
+      const i = +t.dataset.hw, old = d.homework[i], v = t.value.trim();
+      if (!v || v === old) { t.value = old; return; }
+      if (d.homework.some((x, j) => j !== i && x.toLowerCase() === v.toLowerCase())) { t.value = old; toast(v + ' is already on the list.'); return; }
+      d.homework[i] = v;
+      let n = 0;
+      state.entries.forEach(e => { if (e.kind === 'session' && e.dog === d.id && e.ex.includes(old)) { e.ex = e.ex.map(x => x === old ? v : x); n++; } });
+      t.value = v; persist();
+      toast(n ? 'Renamed in ' + plural(n, 'past session') + ' too.' : 'Renamed to ' + v + '.');
+    }
+  });
+  $('#dgSheet').addEventListener('keydown', ev => {
+    if (ev.key !== 'Enter' || ev.target.tagName !== 'INPUT') return;
+    ev.preventDefault();
+    if (ev.target.id === 'dgHwNew') addHomework(); else ev.target.blur();
+  });
+  $('#dgBack').addEventListener('click', showDogList);
+  $('#dgDone').addEventListener('click', closeDogs);
+
+  function renderAll() { applySize(); renderFilter(); renderHistory(); }
+  renderAll();
+
+  // Works offline after the first visit, and asks iOS to keep this app's data.
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+})();
+</script>
+</body>
+</html>
